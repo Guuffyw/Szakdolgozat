@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class NonogrammPanel extends JPanel {
 
-    public NonogrammPanel(GameFrame frame) {
+    public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
 
         setLayout(new BorderLayout());
 
@@ -24,10 +24,14 @@ public class NonogrammPanel extends JPanel {
         JPanel middlePanel = new JPanel(new BorderLayout());
         middlePanel.setBackground(Color.GREEN);
 
-        JLabel placeholder = new JLabel("Game grid goes here");
-        middlePanel.add(placeholder);
+        JPanel gridPanel = new JPanel(new GridLayout(logic.N, logic.N));
+        for (int i = 0; i < logic.N; i++)
+            for (int j = 0; j < logic.N; j++)
+                gridPanel.add(new JButton());
+        middlePanel.add(gridPanel, BorderLayout.CENTER);
 
         add(middlePanel, BorderLayout.CENTER);
+
 
         //RIGHT PANEL
         JPanel rightPanel = new JPanel();

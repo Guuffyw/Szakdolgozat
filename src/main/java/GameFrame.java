@@ -15,8 +15,10 @@ public class GameFrame extends JFrame {
         container = new JPanel(layout);
 
         // add screens
+        NonogrammLogic logic = new NonogrammLogic();
+
         container.add(new HubPanel(this), "hub");
-        container.add(new NonogrammPanel(this), "nonogramm");
+        container.add(new NonogrammPanel(this,logic), "nonogramm");
 
         // show starting screen
         layout.show(container, "hub");
