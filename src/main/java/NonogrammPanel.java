@@ -24,10 +24,32 @@ public class NonogrammPanel extends JPanel {
         JPanel middlePanel = new JPanel(new BorderLayout());
         middlePanel.setBackground(Color.GREEN);
 
-        JPanel gridPanel = new JPanel(new GridLayout(logic.N, logic.N));
-        for (int i = 0; i < logic.N; i++)
-            for (int j = 0; j < logic.N; j++)
-                gridPanel.add(new JButton());
+        JPanel gridPanel = new JPanel(new GridLayout(logic.N+1, logic.N+1));
+        for (int i = 0; i < logic.N+1; i++)
+            for (int j = 0; j < logic.N+1; j++)
+                if (i== 0 && j == 0){
+                    gridPanel.add(new JLabel(""));
+                }
+                else if(i == 0 || j == 0) {
+                    if (j != 0){
+                        gridPanel.add(new JLabel(String.valueOf(logic.countColoumns(j-1))));
+                    }
+                    else {
+                        gridPanel.add(new JLabel(String.valueOf(logic.countRows(i-1))));
+                    }
+                }
+                else {
+                    JButton button = new JButton();
+
+                    if (logic.isBlack(i,j)==1){
+                        button.setBackground(Color.BLACK);
+                    }
+                    else {
+                        button.setBackground(Color.WHITE);
+                    }
+                    gridPanel.add(button);
+                }
+
         middlePanel.add(gridPanel, BorderLayout.CENTER);
 
         add(middlePanel, BorderLayout.CENTER);
