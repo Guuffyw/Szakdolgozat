@@ -12,10 +12,8 @@ public class NonogrammPanel extends JPanel {
         topPanel.setBackground(Color.BLUE);
         topPanel.setPreferredSize(new Dimension(100, 80));
 
-        JLabel timerText = new JLabel("Timer: 0");
         JLabel welcomeText = new JLabel("Welcome to Nonogramm", SwingConstants.CENTER);
 
-        topPanel.add(timerText, BorderLayout.WEST);
         topPanel.add(welcomeText, BorderLayout.CENTER);
 
         add(topPanel, BorderLayout.NORTH);
@@ -61,12 +59,34 @@ public class NonogrammPanel extends JPanel {
         rightPanel.setBackground(Color.LIGHT_GRAY);
 
         JButton backButton = new JButton("Back to Hub");
-        backButton.setPreferredSize(new Dimension(50,50));
+        backButton.setPreferredSize(new Dimension(100,50));
         JButton startButton = new JButton("Start");
         startButton.setPreferredSize(new Dimension(50,50));
+        JLabel healthCounter = new JLabel("Health: ");
+        startButton.setPreferredSize(new Dimension(50,50));
+        JLabel timer = new JLabel("Time:");
+        startButton.setPreferredSize(new Dimension(50,50));
+        JMenuBar menuBar = new JMenuBar();
+        JMenu difficulity = new JMenu("Difficulity: ");
+        startButton.setPreferredSize(new Dimension(50,50));
+        JMenuItem easy = new JMenuItem("Easy");
+        startButton.setPreferredSize(new Dimension(50,50));
+        JMenuItem normal = new JMenuItem("Normal");
+        startButton.setPreferredSize(new Dimension(50,50));
+        JMenuItem hard = new JMenuItem("Hard");
+        startButton.setPreferredSize(new Dimension(50,50));
 
-        rightPanel.add(backButton, BorderLayout.NORTH);
-        rightPanel.add(startButton, BorderLayout.CENTER);
+        menuBar.add(difficulity);
+        difficulity.add(easy);
+        difficulity.add(normal);
+        difficulity.add(hard);
+
+
+        rightPanel.add(menuBar);
+        rightPanel.add(timer);
+        rightPanel.add(backButton);
+        rightPanel.add(startButton);
+        rightPanel.add(healthCounter);
 
         add(rightPanel, BorderLayout.EAST);
 
