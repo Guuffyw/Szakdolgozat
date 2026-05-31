@@ -4,108 +4,120 @@ import java.awt.*;
 public class NonogrammPanel extends JPanel {
 
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
-
         setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
 
         //TOP PANEL
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.BLUE);
-        topPanel.setPreferredSize(new Dimension(100, 80));
+        topPanel.setBackground(Color.WHITE);
 
-        JLabel welcomeText = new JLabel("Welcome to Nonogramm", SwingConstants.CENTER);
-
-        topPanel.add(welcomeText, BorderLayout.CENTER);
+        JLabel welcomeText = new JLabel("Welcome to Nonogramm");
+        welcomeText.setFont(new Font("SansSherif",Font.BOLD,16));
+        topPanel.add(welcomeText, BorderLayout.WEST);
 
         add(topPanel, BorderLayout.NORTH);
 
         //MIDDLE PANEL
-        JPanel middlePanel = new JPanel(new BorderLayout());
-        middlePanel.setBackground(Color.GREEN);
+        int N = logic.N;
 
-        JPanel gridPanel = new JPanel(new GridLayout(logic.N+1, logic.N+1));
-        for (int i = 0; i < logic.N+1; i++)
-            for (int j = 0; j < logic.N+1; j++)
-                if (i== 0 && j == 0){
+        JPanel gridPanel = new JPanel(new GridLayout(N+1,N+1,2,2));
+        gridPanel.setBackground(Color.WHITE);
+
+        for (int i = 0; i < N+1; i++) {
+            for (int j = 0; j < N + 1; j++) {
+                if (i == 0 && j == 0) {
                     gridPanel.add(new JLabel(""));
-                }
-                else if(i == 0 || j == 0) {
-                    if (j != 0){
-                        gridPanel.add(new JLabel(String.valueOf(logic.countColoumns(j-1))));
+                } else if (i == 0 || j == 0) {
+                    if (j != 0) {
+                        gridPanel.add(new JLabel(String.valueOf(logic.countColoumns(j - 1))));
+                    } else {
+                        gridPanel.add(new JLabel(String.valueOf(logic.countRows(i - 1))));
                     }
-                    else {
-                        gridPanel.add(new JLabel(String.valueOf(logic.countRows(i-1))));
-                    }
-                }
-                else {
+                } else {
                     JButton button = new JButton();
 
-                    if (logic.isBlack(i,j)==1){
+                    if (logic.isBlack(i, j) == 1) {
                         button.setBackground(Color.BLACK);
-                    }
-                    else {
+                    } else {
                         button.setBackground(Color.WHITE);
                     }
                     gridPanel.add(button);
                 }
+            }
+        }
 
-        middlePanel.add(gridPanel, BorderLayout.CENTER);
-
-        add(middlePanel, BorderLayout.CENTER);
-
+        add(gridPanel,BorderLayout.CENTER);
 
         //RIGHT PANEL
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel,BoxLayout.Y_AXIS));
         rightPanel.setBackground(Color.LIGHT_GRAY);
-
-        JButton backButton = new JButton("Back to Hub");
-        backButton.setPreferredSize(new Dimension(100,50));
-        JButton startButton = new JButton("Start");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JLabel healthCounter = new JLabel("Health: ");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JLabel timer = new JLabel("Time:");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JMenuBar menuBar = new JMenuBar();
-        JMenu difficulity = new JMenu("Difficulity: ");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JMenuItem easy = new JMenuItem("Easy");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JMenuItem normal = new JMenuItem("Normal");
-        startButton.setPreferredSize(new Dimension(50,50));
-        JMenuItem hard = new JMenuItem("Hard");
-        startButton.setPreferredSize(new Dimension(50,50));
-
-        menuBar.add(difficulity);
-        difficulity.add(easy);
-        difficulity.add(normal);
-        difficulity.add(hard);
+        rightPanel.setPreferredSize(new Dimension(130,0));
 
 
-        rightPanel.add(menuBar);
-        rightPanel.add(timer);
-        rightPanel.add(backButton);
-        rightPanel.add(startButton);
-        rightPanel.add(healthCounter);
+        JLabel diffLabel = new JLabel("Difficulty");
+        diffLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        diffLabel.setForeground(Color.GRAY);
+        diffLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JComboBox<String> difficulty = new JComboBox<>(new String[]{"Easy", "Normal", "Hard"});
+        difficulty.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        difficulty.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        difficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JButton startBtn = new JButton("Start");
+        startBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        startBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JButton backBtn = new JButton("Back to Hub");
+        backBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        backBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        rightPanel.add(diffLabel);
+        rightPanel.add(Box.createVerticalStrut(6));
+        rightPanel.add(difficulty);
+        rightPanel.add(Box.createVerticalStrut(16));
+        rightPanel.add(startBtn);
+        rightPanel.add(Box.createVerticalStrut(6));
+        rightPanel.add(backBtn);
 
         add(rightPanel, BorderLayout.EAST);
 
         //LEFT PANEL
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        JLabel ScoreBoard = new JLabel("ScoreBoard:");
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBackground(Color.WHITE);
+        leftPanel.setPreferredSize(new Dimension(130, 0));
 
-        String week[]= { "Monday","Tuesday","Wednesday",
-                "Thursday","Friday","Saturday","Sunday"};
+        JLabel scoreTitle = new JLabel("Scoreboard");
+        scoreTitle.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        scoreTitle.setForeground(Color.GRAY);
+        leftPanel.add(scoreTitle);
+        leftPanel.add(Box.createVerticalStrut(8));
 
-        JList ScoreBoardList = new JList(week);
-        leftPanel.add(ScoreBoard,BorderLayout.NORTH);
-        leftPanel.add(ScoreBoardList,BorderLayout.SOUTH);
-        add(leftPanel,BorderLayout.WEST);
+        String[][] scores = {{"1. Alice", "1240"}, {"2. Bob", "980"}, {"3. Carol", "870"}, {"4. Dave", "760"}, {"5. Eve", "640"}};
+        for (String[] s : scores) {
+            JPanel row = new JPanel(new BorderLayout());
+            row.setBackground(Color.WHITE);
+            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+            JLabel name = new JLabel(s[0]);
+            name.setFont(new Font("SansSerif", Font.PLAIN, 12));
+            JLabel pts = new JLabel(s[1]);
+            pts.setFont(new Font("SansSerif", Font.PLAIN, 12));
+            pts.setForeground(Color.GRAY);
+            row.add(name, BorderLayout.WEST);
+            row.add(pts, BorderLayout.EAST);
+            leftPanel.add(row);
+            leftPanel.add(Box.createVerticalStrut(4));
+        }
 
+        add(leftPanel, BorderLayout.WEST);
 
 
         // ================= ACTION =================
-        backButton.addActionListener(e -> {
+        backBtn.addActionListener(e -> {
             frame.showHub();
         });
     }
