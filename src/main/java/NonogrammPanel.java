@@ -1,11 +1,20 @@
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class NonogrammPanel extends JPanel {
+    private void msgbox(String s){
+        JOptionPane.showMessageDialog(null, s);
+    }
 
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+
+
+
 
         //TOP PANEL
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -14,6 +23,12 @@ public class NonogrammPanel extends JPanel {
         JLabel welcomeText = new JLabel("Welcome to Nonogramm");
         welcomeText.setFont(new Font("SansSherif",Font.BOLD,16));
         topPanel.add(welcomeText, BorderLayout.WEST);
+
+        JLabel health = new JLabel("Health: " + logic.startingHealth);
+        health.setFont(new Font("SansSherif",Font.BOLD,16));
+        topPanel.add(health,BorderLayout.EAST);
+
+
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -35,12 +50,39 @@ public class NonogrammPanel extends JPanel {
                     }
                 } else {
                     JButton button = new JButton();
+                    button.setBackground(Color.WHITE);
+                    int finalI = i;
+                    int finalJ = j;
+                    button.addMouseListener(new MouseAdapter() {
+                        public void mouseClicked(MouseEvent e) {
+                            if (e.getButton() == MouseEvent.BUTTON1) {
+                                if(button.getText().equals("X")){
+                                    return;
+                                }
+                                else if (logic.isBlack(finalI, finalJ) == 1) {
+                                    button.setBackground(Color.BLACK);
+                                    logic.increaseBlack();
+                                    if (logic.getOriginalBlacks() == logic.getBlacks()){
+                                        msgbox("You have won!");
+                                    }
+                                } else{
+                                    button.setBackground(Color.RED);
 
-                    if (logic.isBlack(i, j) == 1) {
-                        button.setBackground(Color.BLACK);
-                    } else {
-                        button.setBackground(Color.WHITE);
-                    }
+                                    logic.removeOneHearth();
+                                    health.setText("Health: " + logic.startingHealth);
+                                }
+                            }
+
+                            else if (e.getButton() == MouseEvent.BUTTON3) {
+                                if (button.getText().equals("X")){
+                                    button.setText("");
+                                }else {
+                                    button.setText("X");
+                                }
+                            }
+                        }
+                    });
+
                     gridPanel.add(button);
                 }
             }
@@ -117,8 +159,12 @@ public class NonogrammPanel extends JPanel {
 
 
         // ================= ACTION =================
+
+
+
         backBtn.addActionListener(e -> {
             frame.showHub();
         });
+
     }
 }

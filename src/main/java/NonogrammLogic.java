@@ -2,16 +2,31 @@ import java.util.ArrayList;
 
 public class NonogrammLogic {
     private int[][] board;
-    public int N = 10;
+    public int N = 5;
+    public int startingHealth = 3;
+    private int originalBlacks;
+    public int blackCounter = 0;
+
+
+
     public NonogrammLogic(){
         board = new int[N][N];
-        fillBoard();
+        originalBlacks = fillBoard();
     }
     //1 == BLACK ||  0 == WHITE
-    public void fillBoard(){
-        for(int i = 0; i < N;i++)
-            for(int j = 0; j < N;j++)
-                board[i][j] = (int)Math.round( Math.random() )  ;
+    public int fillBoard(){
+        blackCounter = 0;
+        for(int i = 0; i < N;i++){
+            for(int j = 0; j < N;j++){
+                int rndnmbr = (int)Math.round(Math.random());
+                board[i][j] = rndnmbr;
+                if (rndnmbr ==1){
+                    blackCounter++;
+                }
+            }
+        }
+
+        return blackCounter;
     }
 
     public int isBlack(int i,int j){
@@ -60,6 +75,28 @@ public class NonogrammLogic {
             }
         }
         return list;
+    }
+    public void removeOneHearth(){
+            startingHealth--;
+    }
+
+    public int isDead(int health){
+        if(health == 0){
+            return  1;
+        }
+        else return 0;
+    }
+
+    public void increaseBlack(){
+        blackCounter++;
+    }
+
+    public int getOriginalBlacks(){
+        return originalBlacks;
+    }
+
+    public int getBlacks(){
+        return blackCounter;
     }
 
 }
