@@ -5,15 +5,23 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class NonogrammPanel extends JPanel {
-    private void msgbox(String s){
-        JOptionPane.showMessageDialog(null, s);
-    }
+
+    private final GameFrame frame;
+    private final NonogrammLogic logic;
+
+    private JLabel health;
+    private JButton[][] buttons;
 
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
+        this.frame = frame;
+        this.logic = logic;
         setLayout(new BorderLayout());
+        buildPanel();
+    }
+
+    public void buildPanel()
+    {
         setBackground(Color.WHITE);
-
-
 
 
         //TOP PANEL
@@ -21,80 +29,66 @@ public class NonogrammPanel extends JPanel {
         topPanel.setBackground(Color.WHITE);
 
         JLabel welcomeText = new JLabel("Welcome to Nonogramm");
-        welcomeText.setFont(new Font("SansSherif",Font.BOLD,16));
+        welcomeText.setFont(new Font("SansSherif", Font.BOLD, 16));
         topPanel.add(welcomeText, BorderLayout.WEST);
 
-        JLabel health = new JLabel("Health: " + logic.startingHealth);
-        health.setFont(new Font("SansSherif",Font.BOLD,16));
-        topPanel.add(health,BorderLayout.EAST);
-
+        health = new JLabel("Health: " + logic.getHealth());
+        health.setFont(new Font("SansSherif", Font.BOLD, 16));
+        topPanel.add(health, BorderLayout.EAST);
 
 
         add(topPanel, BorderLayout.NORTH);
 
         //MIDDLE PANEL
-        int N = logic.N;
+        int N = logic.getSize();
 
-        JPanel gridPanel = new JPanel(new GridLayout(N+1,N+1,2,2));
+        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 2, 2));
+        buttons = new JButton[N][N];
+
         gridPanel.setBackground(Color.WHITE);
 
-        for (int i = 0; i < N+1; i++) {
+        for (int i = 0; i < N + 1; i++) {
             for (int j = 0; j < N + 1; j++) {
+
                 if (i == 0 && j == 0) {
                     gridPanel.add(new JLabel(""));
-                } else if (i == 0 || j == 0) {
-                    if (j != 0) {
-                        gridPanel.add(new JLabel(String.valueOf(logic.countColoumns(j - 1))));
-                    } else {
-                        gridPanel.add(new JLabel(String.valueOf(logic.countRows(i - 1))));
-                    }
-                } else {
+                }
+                else if (i == 0) {
+                    gridPanel.add(new JLabel(logic.countColoumns(j-1).toString(),SwingConstants.CENTER));
+                }
+                else if(j == 0){
+                    gridPanel.add(new JLabel(logic.countRows(i-1).toString(),SwingConstants.CENTER));
+                }
+
+
+                else  {
                     JButton button = new JButton();
                     button.setBackground(Color.WHITE);
-                    int finalI = i;
-                    int finalJ = j;
+
+                    int finalI = i -1;
+                    int finalJ = j -1;
+
                     button.addMouseListener(new MouseAdapter() {
+                        @Override
                         public void mouseClicked(MouseEvent e) {
-                            if (e.getButton() == MouseEvent.BUTTON1) {
-                                if(button.getText().equals("X")){
-                                    return;
-                                }
-                                else if (logic.isBlack(finalI, finalJ) == 1) {
-                                    button.setBackground(Color.BLACK);
-                                    logic.increaseBlack();
-                                    if (logic.getOriginalBlacks() == logic.getBlacks()){
-                                        msgbox("You have won!");
-                                    }
-                                } else{
-                                    button.setBackground(Color.RED);
+                                handleClick(e,button,finalI,finalJ);
 
-                                    logic.removeOneHearth();
-                                    health.setText("Health: " + logic.startingHealth);
-                                }
-                            }
 
-                            else if (e.getButton() == MouseEvent.BUTTON3) {
-                                if (button.getText().equals("X")){
-                                    button.setText("");
-                                }else {
-                                    button.setText("X");
-                                }
-                            }
                         }
                     });
-
+                    buttons[finalI][finalJ]=button;
                     gridPanel.add(button);
                 }
             }
         }
 
-        add(gridPanel,BorderLayout.CENTER);
+        add(gridPanel, BorderLayout.CENTER);
 
         //RIGHT PANEL
         JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel,BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBackground(Color.LIGHT_GRAY);
-        rightPanel.setPreferredSize(new Dimension(130,0));
+        rightPanel.setPreferredSize(new Dimension(130, 0));
 
 
         JLabel diffLabel = new JLabel("Difficulty");
@@ -161,10 +155,61 @@ public class NonogrammPanel extends JPanel {
         // ================= ACTION =================
 
 
-
         backBtn.addActionListener(e -> {
             frame.showHub();
         });
-
     }
+
+
+
+
+    private void handleClick(MouseEvent e,JButton button,int i ,int j){
+        if (e.getButton() == MouseEvent.BUTTON1){
+            if (logic.isReavealed(i,j)){
+                return;
+            } else if (button.getText().equals("X")) {
+                return;
+            }
+
+            boolean isBlack = logic.revealCell(i,j);
+
+            if (isBlack){
+                button.setBackground(Color.BLACK);
+            }else {
+                button.setBackground(Color.RED);
+            }
+
+            health.setText("Health: " + logic.getHealth());
+
+            if (logic.isWon()){
+                int result = JOptionPane.showConfirmDialog(this,"You won\nstart new game","Victory",JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION){
+                    frame.startNewNonogram();
+                }else{
+                    frame.showHub();
+                }
+            }
+
+            if (logic.isDead()){
+                int result = JOptionPane.showConfirmDialog(this,"You have lost!\n start new game","DEFEAT",JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION){
+                    frame.startNewNonogram();
+                }else{
+                    frame.showHub();
+                }
+            }
+
+        }
+        else if(e.getButton() == MouseEvent.BUTTON3){
+            if (logic.isReavealed(i,j)){
+                return;
+            }
+            if (button.getText().equals("X")){
+                button.setText("");
+            }else {
+                button.setText("X");
+            }
+        }
+    }
+
 }

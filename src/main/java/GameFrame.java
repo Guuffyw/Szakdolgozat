@@ -15,7 +15,7 @@ public class GameFrame extends JFrame {
         container = new JPanel(layout);
 
         // add screens
-        NonogrammLogic logic = new NonogrammLogic();
+        NonogrammLogic logic = new NonogrammLogic(5,3);
 
         container.add(new HubPanel(this), "hub");
         container.add(new NonogrammPanel(this,logic), "nonogramm");
@@ -31,6 +31,11 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    public void startNewNonogram(){
+        setContentPane(new NonogrammPanel(this,new NonogrammLogic(5,3)));
+        revalidate();
+        repaint();
     }
 
     // helper methods for switching screens

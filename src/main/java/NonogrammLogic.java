@@ -2,38 +2,56 @@ import java.util.ArrayList;
 
 public class NonogrammLogic {
     private int[][] board;
-    public int N = 5;
-    public int startingHealth = 3;
-    private int originalBlacks;
-    public int blackCounter = 0;
+    private boolean[][] reavealed;
+    private int N;
+
+    private int health;
+    private int totalBlackCounter;
+    private int foundBlackCounter;
 
 
 
-    public NonogrammLogic(){
+    public NonogrammLogic(int size,int startingHealth){
+        this.N = size;
+        this.health = startingHealth;
+
         board = new int[N][N];
-        originalBlacks = fillBoard();
+        reavealed = new boolean[N][N];
+        fillBoard();
     }
+
     //1 == BLACK ||  0 == WHITE
-    public int fillBoard(){
-        blackCounter = 0;
+    public void fillBoard(){
+        foundBlackCounter = 0;
+        totalBlackCounter = 0;
+
         for(int i = 0; i < N;i++){
             for(int j = 0; j < N;j++){
-                int rndnmbr = (int)Math.round(Math.random());
-                board[i][j] = rndnmbr;
-                if (rndnmbr ==1){
-                    blackCounter++;
+                board[i][j] = (int)Math.round(Math.random());
+                if (board[i][j] ==1){
+                    totalBlackCounter++;
                 }
             }
         }
-
-        return blackCounter;
     }
 
-    public int isBlack(int i,int j){
-        if (board[i-1][j-1] == 0)
-            return 0;
-        else
-            return 1;
+    public boolean revealCell(int i, int j){
+        if (reavealed[i][j]){
+            return false;
+        }
+
+        reavealed[i][j] = true;
+
+        if (board[i][j] == 1){
+            foundBlackCounter++;
+            return true;
+        }
+        health--;
+        return false;
+    }
+
+    public boolean isReavealed(int i,int j){
+        return reavealed[i][j];
     }
 
     public ArrayList<Integer> countColoumns(int i){
@@ -76,27 +94,19 @@ public class NonogrammLogic {
         }
         return list;
     }
-    public void removeOneHearth(){
-            startingHealth--;
+
+    public boolean isDead(){
+        return health <= 0;
+    }
+    public boolean isWon(){
+        return foundBlackCounter == totalBlackCounter;
+    }
+    public int getHealth(){
+        return health;
+    }
+    public int getSize(){
+        return N;
     }
 
-    public int isDead(int health){
-        if(health == 0){
-            return  1;
-        }
-        else return 0;
-    }
-
-    public void increaseBlack(){
-        blackCounter++;
-    }
-
-    public int getOriginalBlacks(){
-        return originalBlacks;
-    }
-
-    public int getBlacks(){
-        return blackCounter;
-    }
 
 }
