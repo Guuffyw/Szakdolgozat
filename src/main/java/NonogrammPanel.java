@@ -12,6 +12,8 @@ public class NonogrammPanel extends JPanel {
     private JLabel health;
     private JButton[][] buttons;
 
+    public String selectedDiff = "Easy";
+
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
         this.frame = frame;
         this.logic = logic;
@@ -97,6 +99,7 @@ public class NonogrammPanel extends JPanel {
         diffLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JComboBox<String> difficulty = new JComboBox<>(new String[]{"Easy", "Normal", "Hard"});
+
         difficulty.setFont(new Font("SansSerif", Font.PLAIN, 12));
         difficulty.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         difficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -158,6 +161,15 @@ public class NonogrammPanel extends JPanel {
         backBtn.addActionListener(e -> {
             frame.showHub();
         });
+
+        startBtn.addActionListener(e ->{
+            frame.startNewNonogram(logic.setDiff(selectedDiff));
+        });
+
+        difficulty.addActionListener(e -> {
+           selectedDiff = (String) difficulty.getSelectedItem();
+        });
+
     }
 
 
@@ -184,7 +196,7 @@ public class NonogrammPanel extends JPanel {
             if (logic.isWon()){
                 int result = JOptionPane.showConfirmDialog(this,"You won\nstart new game","Victory",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
-                    frame.startNewNonogram();
+                    frame.startNewNonogram(logic.setDiff(selectedDiff));
                 }else{
                     frame.showHub();
                 }
@@ -193,7 +205,7 @@ public class NonogrammPanel extends JPanel {
             if (logic.isDead()){
                 int result = JOptionPane.showConfirmDialog(this,"You have lost!\n start new game","DEFEAT",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
-                    frame.startNewNonogram();
+                    frame.startNewNonogram(logic.setDiff(selectedDiff));
                 }else{
                     frame.showHub();
                 }

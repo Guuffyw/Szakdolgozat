@@ -9,8 +9,18 @@ public class NonogrammLogic {
     private int totalBlackCounter;
     private int foundBlackCounter;
 
+    public int setDiff(String string){
+        if (string.equals("Easy")){
+            N = 5;
+        } else if (string.equals("Normal")) {
+            N = 10;
+        } else if (string.equals("Hard")) {
+            N = 15;
+        }
+        return N;
+    }
 
-
+    
     public NonogrammLogic(int size,int startingHealth){
         this.N = size;
         this.health = startingHealth;

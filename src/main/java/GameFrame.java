@@ -32,8 +32,8 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    public void startNewNonogram(){
-        setContentPane(new NonogrammPanel(this,new NonogrammLogic(5,3)));
+    public void startNewNonogram(int size){
+        setContentPane(new NonogrammPanel(this,new NonogrammLogic(size,3)));
         revalidate();
         repaint();
     }
