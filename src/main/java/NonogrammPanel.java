@@ -14,6 +14,19 @@ public class NonogrammPanel extends JPanel {
 
     public String selectedDiff = "Easy";
 
+    private static final Color DARK        = new Color(0x111111);
+    private static final Color DARK_PANEL  = new Color(0x1A1A1A);
+    private static final Color DARK_ROW    = new Color(0x2A2A2A);
+    private static final Color DARK_BORDER = new Color(0x333333);
+    private static final Color TEXT_BRIGHT = new Color(0xCCCCCC);
+    private static final Color TEXT_DIM    = new Color(0x555555);
+    private static final Color PAGE_BG     = new Color(0xF5F5F3);
+    private static final Color CELL_BORDER = new Color(0xCCCCCC);
+    private static final Color BLUE_BTN    = new Color(0x4A90D9);
+    private static final Color WRONG_BG    = new Color(0xFDF0F0);
+    private static final Color WRONG_BORDER= new Color(0xE8A8A8);
+    private static final Color WRONG_TEXT  = new Color(0xC25050);
+
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
         this.frame = frame;
         this.logic = logic;
@@ -23,137 +36,176 @@ public class NonogrammPanel extends JPanel {
 
     public void buildPanel()
     {
-        setBackground(Color.WHITE);
+        setBackground(PAGE_BG);
 
 
         //TOP PANEL
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.WHITE);
+        topPanel.setBackground(DARK);
+        topPanel.setPreferredSize(new Dimension(0,48));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(0,20,0,20));
 
-        JLabel welcomeText = new JLabel("Welcome to Nonogramm");
-        welcomeText.setFont(new Font("SansSherif", Font.BOLD, 16));
-        topPanel.add(welcomeText, BorderLayout.WEST);
+        JLabel title = new JLabel("NONOGRAMM");
+        title.setFont(new Font("SansSerif", Font.BOLD, 14));
+        title.setForeground(Color.WHITE);
+        topPanel.add(title, BorderLayout.CENTER);
 
         health = new JLabel("Health: " + logic.getHealth());
-        health.setFont(new Font("SansSherif", Font.BOLD, 16));
+        health.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        health.setForeground(new Color(0xAAAAAA));
         topPanel.add(health, BorderLayout.EAST);
-
 
         add(topPanel, BorderLayout.NORTH);
 
         //MIDDLE PANEL
         int N = logic.getSize();
-
-        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 2, 2));
+        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
+        gridPanel.setBackground(PAGE_BG);
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
         buttons = new JButton[N][N];
-
-        gridPanel.setBackground(Color.WHITE);
 
         for (int i = 0; i < N + 1; i++) {
             for (int j = 0; j < N + 1; j++) {
-
                 if (i == 0 && j == 0) {
                     gridPanel.add(new JLabel(""));
-                }
-                else if (i == 0) {
-                    gridPanel.add(new JLabel(logic.countColoumns(j-1).toString(),SwingConstants.CENTER));
-                }
-                else if(j == 0){
-                    gridPanel.add(new JLabel(logic.countRows(i-1).toString(),SwingConstants.CENTER));
-                }
-
-
-                else  {
+                } else if (i == 0) {
+                    JLabel lbl = new JLabel(logic.countColoumns(j - 1).toString(), SwingConstants.CENTER);
+                    lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
+                    lbl.setForeground(new Color(0x222222));
+                    gridPanel.add(lbl);
+                } else if (j == 0) {
+                    JLabel lbl = new JLabel(logic.countRows(i - 1).toString(), SwingConstants.CENTER);
+                    lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
+                    lbl.setForeground(new Color(0x222222));
+                    gridPanel.add(lbl);
+                } else {
                     JButton button = new JButton();
                     button.setBackground(Color.WHITE);
+                    button.setFocusPainted(false);
+                    button.setOpaque(true);
+                    button.setBorder(BorderFactory.createLineBorder(CELL_BORDER, 1));
+                    button.setFont(new Font("SansSerif", Font.BOLD, 13));
+                    button.setForeground(CELL_BORDER);
+                    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-                    int finalI = i -1;
-                    int finalJ = j -1;
+                    int finalI = i - 1;
+                    int finalJ = j - 1;
 
                     button.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
-                                handleClick(e,button,finalI,finalJ);
-
-
+                            handleClick(e, button, finalI, finalJ);
+                        }
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            if (button.getBackground().equals(Color.WHITE))
+                                button.setBackground(new Color(0xEEEEEE));
+                        }
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            if (button.getBackground().equals(new Color(0xEEEEEE)))
+                                button.setBackground(Color.WHITE);
                         }
                     });
-                    buttons[finalI][finalJ]=button;
+
+                    buttons[finalI][finalJ] = button;
                     gridPanel.add(button);
                 }
             }
         }
-
         add(gridPanel, BorderLayout.CENTER);
 
         //RIGHT PANEL
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBackground(Color.LIGHT_GRAY);
-        rightPanel.setPreferredSize(new Dimension(130, 0));
+        rightPanel.setBackground(DARK_PANEL);
+        rightPanel.setPreferredSize(new Dimension(145, 0));
+        rightPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 1, 0, 0, DARK),
+                BorderFactory.createEmptyBorder(18, 14, 18, 14)
+        ));
 
-
-        JLabel diffLabel = new JLabel("Difficulty");
-        diffLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        diffLabel.setForeground(Color.GRAY);
+        JLabel diffLabel = new JLabel("DIFFICULTY");
+        diffLabel.setFont(new Font("SansSerif", Font.BOLD, 10));
+        diffLabel.setForeground(TEXT_DIM);
         diffLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JComboBox<String> difficulty = new JComboBox<>(new String[]{"Easy", "Normal", "Hard"});
-
         difficulty.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        difficulty.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        difficulty.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         difficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
+        difficulty.setBackground(DARK_ROW);
+        difficulty.setForeground(TEXT_BRIGHT);
 
         JButton startBtn = new JButton("Start");
-        startBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        startBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        startBtn.setBackground(BLUE_BTN);
+        startBtn.setForeground(Color.WHITE);
+        startBtn.setFocusPainted(false);
+        startBtn.setBorderPainted(false);
+        startBtn.setOpaque(true);
+        startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         startBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        startBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         JButton backBtn = new JButton("Back to Hub");
         backBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        backBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        backBtn.setBackground(DARK_PANEL);
+        backBtn.setForeground(TEXT_DIM);
+        backBtn.setFocusPainted(false);
+        backBtn.setBorder(BorderFactory.createLineBorder(DARK_BORDER, 1));
+        backBtn.setOpaque(true);
+        backBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         rightPanel.add(diffLabel);
-        rightPanel.add(Box.createVerticalStrut(6));
+        rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(difficulty);
-        rightPanel.add(Box.createVerticalStrut(16));
+        rightPanel.add(Box.createVerticalStrut(20));
         rightPanel.add(startBtn);
-        rightPanel.add(Box.createVerticalStrut(6));
+        rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(backBtn);
-
+        rightPanel.add(Box.createVerticalGlue());
         add(rightPanel, BorderLayout.EAST);
 
         //LEFT PANEL
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(Color.WHITE);
-        leftPanel.setPreferredSize(new Dimension(130, 0));
+        leftPanel.setBackground(DARK_PANEL);
+        leftPanel.setPreferredSize(new Dimension(145, 0));
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(18, 14, 18, 14));
 
-        JLabel scoreTitle = new JLabel("Scoreboard");
-        scoreTitle.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        scoreTitle.setForeground(Color.GRAY);
+        JLabel scoreTitle = new JLabel("SCOREBOARD");
+        scoreTitle.setFont(new Font("SansSerif", Font.BOLD, 10));
+        scoreTitle.setForeground(TEXT_DIM);
+        scoreTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.add(scoreTitle);
-        leftPanel.add(Box.createVerticalStrut(8));
+        leftPanel.add(Box.createVerticalStrut(12));
 
         String[][] scores = {{"1. Alice", "1240"}, {"2. Bob", "980"}, {"3. Carol", "870"}, {"4. Dave", "760"}, {"5. Eve", "640"}};
-        for (String[] s : scores) {
+        for (int k = 0; k < scores.length; k++) {
             JPanel row = new JPanel(new BorderLayout());
-            row.setBackground(Color.WHITE);
-            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
-            JLabel name = new JLabel(s[0]);
+            row.setBackground(k == 0 ? DARK_ROW : DARK_PANEL);
+            row.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
+            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+            row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel name = new JLabel(scores[k][0]);
             name.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            JLabel pts = new JLabel(s[1]);
+            name.setForeground(TEXT_BRIGHT);
+
+            JLabel pts = new JLabel(scores[k][1]);
             pts.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            pts.setForeground(Color.GRAY);
+            pts.setForeground(TEXT_DIM);
+
             row.add(name, BorderLayout.WEST);
             row.add(pts, BorderLayout.EAST);
             leftPanel.add(row);
-            leftPanel.add(Box.createVerticalStrut(4));
+            leftPanel.add(Box.createVerticalStrut(2));
         }
-
+        leftPanel.add(Box.createVerticalGlue());
         add(leftPanel, BorderLayout.WEST);
-
 
         // ================= ACTION =================
 

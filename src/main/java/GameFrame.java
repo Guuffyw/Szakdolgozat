@@ -33,9 +33,10 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
     public void startNewNonogram(int size){
-        setContentPane(new NonogrammPanel(this,new NonogrammLogic(size,3)));
-        revalidate();
-        repaint();
+        container.add(new NonogrammPanel(this,new NonogrammLogic(size,3)),"nonogramm");
+        layout.show(container,"nonogramm");
+        container.revalidate();
+        container.repaint();
     }
 
     // helper methods for switching screens
