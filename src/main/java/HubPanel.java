@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HubPanel extends JPanel {
-
     private final GameFrame frame;
     private JPanel cardGrid;
     private final List<GameCard> cards = new ArrayList<>();
-
+    private String UserName = new String();
+    private boolean signedIn = false;
 
     private final Color NAV_CLR = new Color(0x30302e);
     private final Color BG_CLR = new Color(0x141413);
@@ -20,34 +20,37 @@ public class HubPanel extends JPanel {
     }
 
     private void buildPanel() {
-        //Top Panel
+        //---------------- NAVIGATION BAR ----------------
         JPanel navBar = new JPanel(new BorderLayout());
-        JPanel topBar = new JPanel(new BorderLayout());
-        topBar.setBackground(NAV_CLR);
-        topBar.setPreferredSize(new Dimension(0, 50));
-        JPanel top2 = new JPanel(new BorderLayout());
-        top2.setBackground(NAV_CLR);
-        top2.setPreferredSize(new Dimension(0, 50));
+
+        JPanel topRow = new JPanel(new BorderLayout());
+        topRow.setBackground(NAV_CLR);
+        topRow.setPreferredSize(new Dimension(0, 50));
+        JPanel buttomRow = new JPanel(new BorderLayout());
+        buttomRow.setBackground(NAV_CLR);
+        buttomRow.setPreferredSize(new Dimension(0, 50));
 
         JLabel title = new JLabel("Game Hub");
         title.setForeground(Color.WHITE);
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
-        topBar.add(title, BorderLayout.WEST);
-
-        navBar.add(topBar, BorderLayout.NORTH);
-        navBar.add(top2, BorderLayout.SOUTH);
+        topRow.add(title, BorderLayout.WEST);
+        navBar.add(topRow, BorderLayout.NORTH);
+        navBar.add(buttomRow, BorderLayout.SOUTH);
         add(navBar, BorderLayout.NORTH);
 
-
+        //---------------- CARD BAR ----------------
         cardGrid = new JPanel(new FlowLayout());
         cardGrid.setBackground(BG_CLR);
 
+        //-------- GAMES --------
         addGame("Nonogramm");
 
         add(cardGrid, BorderLayout.CENTER);
     }
 
+
+    //---------------- METHODS ----------------
     private void addGame(String name) {
         GameCard card = new GameCard(name);
         cards.add(card);
@@ -66,11 +69,7 @@ public class HubPanel extends JPanel {
 
 
 
-
-
-
-
-    //Class for the small card designs
+    //---------------- CARD DESIGN ----------------
     private class GameCard extends JPanel {
         String gameName;
 
@@ -123,7 +122,7 @@ public class HubPanel extends JPanel {
             //---------------- BOTTOM ----------------
             JButton playBtn = new JButton("Play");
             playBtn.setForeground(Color.WHITE);
-            playBtn.setBackground(new Color(70, 130, 180));
+            playBtn.setBackground(BG_CLR);
             playBtn.setFocusPainted(false);
             playBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             playBtn.addActionListener(e -> launchGame(gameName));
