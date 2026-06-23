@@ -7,8 +7,9 @@ public class HubPanel extends JPanel {
     private final GameFrame frame;
     private JPanel cardGrid;
     private final List<GameCard> cards = new ArrayList<>();
-    private String UserName = new String();
-    private boolean signedIn = false;
+    private JLabel UserName = new JLabel("Not logged in yet");
+    private JButton loginButton;
+
 
     private final Color NAV_CLR = new Color(0x30302e);
     private final Color BG_CLR = new Color(0x141413);
@@ -26,24 +27,62 @@ public class HubPanel extends JPanel {
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setBackground(NAV_CLR);
         topRow.setPreferredSize(new Dimension(0, 50));
+        topRow.setBorder(BorderFactory.createMatteBorder(0,0,2,0,BG_CLR));
         JPanel buttomRow = new JPanel(new BorderLayout());
         buttomRow.setBackground(NAV_CLR);
         buttomRow.setPreferredSize(new Dimension(0, 50));
 
-        JLabel title = new JLabel("Game Hub");
+        JPanel leftSpacer = new JPanel();
+        leftSpacer.setBackground(NAV_CLR);
+        leftSpacer.setPreferredSize(new Dimension(200, 50));
+
+        JLabel title = new JLabel("Game Hub", SwingConstants.CENTER);
         title.setForeground(Color.WHITE);
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
-        topRow.add(title, BorderLayout.WEST);
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        rightPanel.setBackground(NAV_CLR);
+        rightPanel.setPreferredSize(new Dimension(200, 50));
+
+
+        UserName = new JLabel(getUserName());
+        UserName.setForeground(Color.WHITE);
+
+        loginButton = new JButton( "Login");
+
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setBorderPainted(false);
+        loginButton.setContentAreaFilled(false);
+        loginButton.setFocusPainted(false);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        rightPanel.add(UserName);
+        rightPanel.add(loginButton);
+        topRow.add(leftSpacer, BorderLayout.WEST);
+        topRow.add(title, BorderLayout.CENTER);
+        topRow.add(rightPanel, BorderLayout.EAST);
         navBar.add(topRow, BorderLayout.NORTH);
         navBar.add(buttomRow, BorderLayout.SOUTH);
         add(navBar, BorderLayout.NORTH);
+        //---------------- ACTIONS ----------------
+        loginButton.addActionListener(e -> {
+            String input = JOptionPane.showInputDialog(this, "Enter username");
+
+            if (input != null && !input.trim().isEmpty()) {
+                UserName.setText(input);
+                loginButton.setText("Change User");
+            }
+        });
 
         //---------------- CARD BAR ----------------
         cardGrid = new JPanel(new FlowLayout());
         cardGrid.setBackground(BG_CLR);
 
         //-------- GAMES --------
+        addGame("Nonogramm");
+        addGame("Nonogramm");
+        addGame("Nonogramm");
+        addGame("Nonogramm");
         addGame("Nonogramm");
 
         add(cardGrid, BorderLayout.CENTER);
@@ -63,6 +102,9 @@ public class HubPanel extends JPanel {
         }
     }
 
+    public String getUserName(){
+        return UserName.getText();
+    }
 
 
 
