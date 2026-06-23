@@ -11,6 +11,8 @@ public class NonogrammLogic {
     private int totalBlackCounter;
     private int foundBlackCounter;
     private double density;
+    private String[] rowClues;
+    private String[] colClues;
 
     public int setDiff(String string){
         if (string.equals("Easy")){
@@ -28,9 +30,13 @@ public class NonogrammLogic {
         this.N = size;
         this.health = startingHealth;
 
+
+
         board = new boolean[N][N];
         reavealed = new boolean[N][N];
         fillBoard(N);
+        rowClues = buildcountRows(board);
+        colClues = buildcountColoumns(board);
     }
 
     //1 == BLACK ||  0 == WHITE
@@ -72,46 +78,10 @@ public class NonogrammLogic {
         return reavealed[i][j];
     }
 
-    public ArrayList<Integer> countColoumns(int i){
-        ArrayList<Integer> list = new ArrayList<>();
-        int counter =0;
-        for (int j = 0;j < N; j++){
-            if( board[j][i]){
-                counter++;
-                if (j == N-1){
-                    list.add(counter);
-                }
-            }
-            else {
-                if (counter != 0) {
-                    list.add(counter);
-                }
 
-                counter = 0;
-            }
-        }
-        return list;
-    }
-    public ArrayList<Integer> countRows(int i){
-        ArrayList<Integer> list = new ArrayList<>();
-        int counter =0;
-        for (int j = 0;j < N; j++){
-            if( board[i][j]){
-                counter++;
-                if (j == N-1){
-                    list.add(counter);
-                }
-            }
-            else {
-                if (counter != 0) {
-                    list.add(counter);
-                }
 
-                counter = 0;
-            }
-        }
-        return list;
-    }
+
+
 
     public boolean isDead(){
         return health <= 0;
@@ -125,6 +95,57 @@ public class NonogrammLogic {
     public int getSize(){
         return N;
     }
+    public String countRows(int i){
+        return rowClues[i];
+    }
+    public String countColoumns(int i){
+        return colClues[i];
+    }
 
 
+
+
+    public String[] buildcountColoumns(boolean[][] grid) {
+        int size = grid.length;
+        String[] result = new String[size];
+        for (int j = 0; j < size; j++) {
+            boolean[] col = new boolean[size];
+            for (int i = 0; i < size; i++) {
+                col[i] = grid[i][j];
+            }
+            result[j] = buildCount(col);
+        }
+        return result;
+    }
+
+    public String[] buildcountRows(boolean[][] grid){
+        String[] result = new String[grid.length];
+        for (int i = 0; i < grid.length; i++){
+            result[i] = buildCount(grid[i]);
+        }
+        return result;
+    }
+
+    public String buildCount(boolean[] line){
+        StringBuilder builder = new StringBuilder();
+        int count = 0;
+        for (boolean cell : line){
+            if (cell){
+                count++;
+            } else if (count > 0) {
+                builder.append(count).append(",");
+                count = 0;
+            }
+        }
+        if (count > 0){
+            builder.append(count);
+        }
+        String result = builder.toString().trim();
+        if (result.isEmpty()){
+            return "0";
+        }
+        else {
+            return result;
+        }
+    }
 }

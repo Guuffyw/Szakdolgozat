@@ -69,12 +69,13 @@ public class NonogrammPanel extends JPanel {
                 if (i == 0 && j == 0) {
                     gridPanel.add(new JLabel(""));
                 } else if (i == 0) {
-                    JLabel lbl = new JLabel(logic.countColoumns(j - 1).toString(), SwingConstants.CENTER);
+                    JLabel lbl = new JLabel(logic.countColoumns(j - 1), SwingConstants.CENTER);
                     lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
                     lbl.setForeground(new Color(0x222222));
+
                     gridPanel.add(lbl);
                 } else if (j == 0) {
-                    JLabel lbl = new JLabel(logic.countRows(i - 1).toString(), SwingConstants.CENTER);
+                    JLabel lbl = new JLabel(logic.countRows(i-1), SwingConstants.CENTER);
                     lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
                     lbl.setForeground(new Color(0x222222));
                     gridPanel.add(lbl);
