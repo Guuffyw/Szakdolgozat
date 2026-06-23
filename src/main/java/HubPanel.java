@@ -10,6 +10,7 @@ public class HubPanel extends JPanel {
     private final List<GameCard> cards = new ArrayList<>();
     private static JLabel UserName = new JLabel("Not logged in yet");
     private JButton loginButton;
+    private boolean favToggle = true;
 
 
     private final Color NAV_CLR = new Color(0x30302e);
@@ -29,7 +30,7 @@ public class HubPanel extends JPanel {
         topRow.setBackground(NAV_CLR);
         topRow.setPreferredSize(new Dimension(0, 50));
         topRow.setBorder(BorderFactory.createMatteBorder(0,0,2,0,BG_CLR));
-        JPanel buttomRow = new JPanel(new BorderLayout());
+        JPanel buttomRow = new JPanel(new GridBagLayout());
         buttomRow.setBackground(NAV_CLR);
         buttomRow.setPreferredSize(new Dimension(0, 50));
 
@@ -45,6 +46,17 @@ public class HubPanel extends JPanel {
         rightPanel.setBackground(NAV_CLR);
         rightPanel.setPreferredSize(new Dimension(200, 50));
 
+        JTextField searchBar = new JTextField();
+        JButton favourites = new JButton("\u2605 Favourites");
+        favourites.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        favourites.setForeground(Color.WHITE);
+        favourites.setBorderPainted(false);
+        favourites.setContentAreaFilled(false);
+        favourites.setFocusPainted(false);
+        favourites.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        GridBagConstraints gBC = new GridBagConstraints();
+        gBC.fill = GridBagConstraints.HORIZONTAL;
+        gBC.gridy = 0;
 
         UserName = new JLabel(getUserName());
         UserName.setForeground(Color.WHITE);
@@ -62,6 +74,12 @@ public class HubPanel extends JPanel {
         topRow.add(leftSpacer, BorderLayout.WEST);
         topRow.add(title, BorderLayout.CENTER);
         topRow.add(rightPanel, BorderLayout.EAST);
+        gBC.gridx = 0;
+        gBC.weightx = 0.75;
+        buttomRow.add(searchBar, gBC);
+        gBC.gridx = 1;
+        gBC.weightx = 0.25;
+        buttomRow.add(favourites, gBC);
         navBar.add(topRow, BorderLayout.NORTH);
         navBar.add(buttomRow, BorderLayout.SOUTH);
         add(navBar, BorderLayout.NORTH);
@@ -80,24 +98,35 @@ public class HubPanel extends JPanel {
             }
         });
 
+        favourites.addActionListener(e -> {
+            favToggle = !favToggle;
+            for(GameCard card :cards){
+
+                    card.setVisible(card.isFavorited || favToggle);
+
+            }
+            cardGrid.revalidate();
+            cardGrid.repaint();
+        });
+
         //---------------- CARD BAR ----------------
         cardGrid = new JPanel(new FlowLayout());
         cardGrid.setBackground(BG_CLR);
 
         //-------- GAMES --------
-        addGame("Nonogramm");
-        addGame("Nonogramm");
-        addGame("Nonogramm");
-        addGame("Nonogramm");
-        addGame("Nonogramm");
+        addGame("Nonogramm",false);
+        addGame("Nonogramm",false);
+        addGame("Nonogramm",false);
+        addGame("Nonogramm",false);
+        addGame("Nonogramm",false);
 
         add(cardGrid, BorderLayout.CENTER);
     }
 
 
     //---------------- METHODS ----------------
-    private void addGame(String name) {
-        GameCard card = new GameCard(name);
+    private void addGame(String name, boolean fav) {
+        GameCard card = new GameCard(name,fav);
         cards.add(card);
         cardGrid.add(card);
     }
@@ -120,10 +149,13 @@ public class HubPanel extends JPanel {
     //---------------- CARD DESIGN ----------------
     private class GameCard extends JPanel {
         String gameName;
+        boolean isFavorited;
 
-        public GameCard(String name) {
+        private final JButton starBtn;
+
+        public GameCard(String name, boolean isFavorited) {
             this.gameName = name;
-
+            this.isFavorited = isFavorited;
             setPreferredSize(new Dimension(180, 150));
             setBackground(NAV_CLR);
             setBorder(BorderFactory.createCompoundBorder(
@@ -136,7 +168,7 @@ public class HubPanel extends JPanel {
             JPanel topPart = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
             topPart.setBackground(NAV_CLR);
 
-            JButton starBtn = new JButton("★");
+            starBtn = new JButton(isFavorited ? "\u2605" : "\u2606");
             starBtn.setFont(new Font("SansSerif", Font.PLAIN, 16));
             starBtn.setForeground(Color.WHITE);
             starBtn.setBorderPainted(false);
@@ -178,6 +210,19 @@ public class HubPanel extends JPanel {
             add(topPart, BorderLayout.NORTH);
             add(middlePart, BorderLayout.CENTER);
             add(playBtn, BorderLayout.SOUTH);
+
+            //---------------- ACTIONS ----------------
+            starBtn.addActionListener(e -> {
+                toggleFav();
+            });
+
+
+        }
+        private void toggleFav(){
+            isFavorited = !isFavorited;
+            starBtn.setText(isFavorited ? "\u2605" : "\u2606");
+            cardGrid.revalidate();
+            cardGrid.repaint();
         }
     }
 }

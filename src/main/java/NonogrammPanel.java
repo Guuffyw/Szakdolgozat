@@ -56,6 +56,9 @@ public class NonogrammPanel extends JPanel {
 
         topPanel.add(title, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
+
+
+
         //---------------- MIDDLE PANEL ----------------
         int N = logic.getSize();
         JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
@@ -114,6 +117,8 @@ public class NonogrammPanel extends JPanel {
             }
         }
         add(gridPanel, BorderLayout.CENTER);
+
+
 
         //---------------- RIGHT PANEL ----------------
         JPanel rightPanel = new JPanel();
@@ -184,6 +189,8 @@ public class NonogrammPanel extends JPanel {
         rightPanel.add(Box.createVerticalGlue());
         add(rightPanel, BorderLayout.EAST);
 
+
+
         //---------------- LEFT PANEL ----------------
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -221,6 +228,8 @@ public class NonogrammPanel extends JPanel {
         }
         leftPanel.add(Box.createVerticalGlue());
         add(leftPanel, BorderLayout.WEST);
+
+
 
         //---------------- ACTIONS ----------------
 
@@ -270,7 +279,7 @@ public class NonogrammPanel extends JPanel {
                 gameTimer.stop();
                 try{
                     if (frame.currentPlayerId != -1){
-                        frame.db.saveScore(frame.currentPlayerId,selectedDiff,"WIN");
+                        frame.db.saveScore(frame.currentPlayerId,"Nonogramm",logic.calculateScore(secondsElapsed));
                     }
                 }catch (SQLException b){
                     b.printStackTrace();

@@ -74,6 +74,12 @@ public class NonogrammLogic {
         return false;
     }
 
+    public int calculateScore(int seconds){
+        int healthbonus = getHealth() * 100;
+        int time = 1000 - seconds;
+        return (healthbonus + time);
+    }
+
     public boolean isReavealed(int i,int j){
         return reavealed[i][j];
     }

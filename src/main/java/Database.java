@@ -31,8 +31,8 @@ public class Database {
             CREATE TABLE IF NOT EXISTS scores (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 player_id INTEGER NOT NULL,
-                difficulty TEXT NOT NULL,
-                result TEXT NOT NULL,
+                gameName TEXT NOT NULL,
+                score INTEGER NOT NULL,
                 FOREIGN KEY(player_id) REFERENCES players(id)
             )
         """;
@@ -88,14 +88,16 @@ public class Database {
         throw new SQLException("Failed to create player.");
     }
 
-    public void saveScore(int playerId, String difficulty, String result) throws SQLException {
+    public void saveScore(int playerId, String gameName, int score) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO scores(player_id,difficulty,result) VALUES(?,?,?)");
+                "INSERT INTO scores(player_id,gameName,score) VALUES(?,?,?)");
         ps.setInt(1, playerId);
-        ps.setString(2, difficulty);
-        ps.setString(3, result);
+        ps.setString(2, gameName);
+        ps.setInt(3, score);
         ps.executeUpdate();
     }
+
+
 
     public void close() {
         if (connection == null) {
