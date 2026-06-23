@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class NonogrammPanel extends JPanel {
 
@@ -247,6 +248,13 @@ public class NonogrammPanel extends JPanel {
             health.setText("Health: " + logic.getHealth());
 
             if (logic.isWon()){
+                try{
+                    if (frame.currentPlayerId != -1){
+                        frame.db.saveScore(frame.currentPlayerId,selectedDiff,"WIN");
+                    }
+                }catch (SQLException b){
+                    b.printStackTrace();
+                };
                 int result = JOptionPane.showConfirmDialog(this,"You won\nstart new game","Victory",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
                     frame.startNewNonogram(logic.setDiff(selectedDiff));

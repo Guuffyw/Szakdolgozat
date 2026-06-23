@@ -104,7 +104,6 @@ public class NonogrammLogic {
 
 
 
-
     public String[] buildcountColoumns(boolean[][] grid) {
         int size = grid.length;
         String[] result = new String[size];

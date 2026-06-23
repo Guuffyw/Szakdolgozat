@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameFrame extends JFrame {
+    public final Database db = new Database();
+    public int currentPlayerId = -1;
 
     private CardLayout layout;
     private JPanel container;
@@ -37,6 +39,12 @@ public class GameFrame extends JFrame {
         layout.show(container,"nonogramm");
         container.revalidate();
         container.repaint();
+    }
+
+    @Override
+    public void dispose() {
+        db.close();
+        super.dispose();
     }
 
     // helper methods for switching screens

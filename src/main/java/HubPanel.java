@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,11 @@ public class HubPanel extends JPanel {
             if (input != null && !input.trim().isEmpty()) {
                 UserName.setText(input);
                 loginButton.setText("Change User");
+                try {
+                    frame.currentPlayerId = frame.db.getOrCreatePlayer(input);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
