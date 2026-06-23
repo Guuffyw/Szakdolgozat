@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.jar.JarEntry;
 
 public class NonogrammPanel extends JPanel {
 
@@ -14,6 +15,10 @@ public class NonogrammPanel extends JPanel {
     private JButton[][] buttons;
 
     public String selectedDiff = "Easy";
+
+    private Timer gameTimer;
+    private int secondsElapsed = 0;
+    private JLabel timerLabel;
 
     private static final Color DARK        = new Color(0x111111);
     private static final Color DARK_PANEL  = new Color(0x1A1A1A);
@@ -40,25 +45,18 @@ public class NonogrammPanel extends JPanel {
         setBackground(PAGE_BG);
 
 
-        //TOP PANEL
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(DARK);
-        topPanel.setPreferredSize(new Dimension(0,48));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(0,20,0,20));
+        topPanel.setPreferredSize(new Dimension(0, 48));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 
-        JLabel title = new JLabel("NONOGRAMM");
+        JLabel title = new JLabel("NONOGRAMM", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 14));
         title.setForeground(Color.WHITE);
+
         topPanel.add(title, BorderLayout.CENTER);
-
-        health = new JLabel("Health: " + logic.getHealth());
-        health.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        health.setForeground(new Color(0xAAAAAA));
-        topPanel.add(health, BorderLayout.EAST);
-
         add(topPanel, BorderLayout.NORTH);
-
-        //MIDDLE PANEL
+        //---------------- MIDDLE PANEL ----------------
         int N = logic.getSize();
         JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
         gridPanel.setBackground(PAGE_BG);
@@ -117,7 +115,7 @@ public class NonogrammPanel extends JPanel {
         }
         add(gridPanel, BorderLayout.CENTER);
 
-        //RIGHT PANEL
+        //---------------- RIGHT PANEL ----------------
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBackground(DARK_PANEL);
@@ -126,6 +124,15 @@ public class NonogrammPanel extends JPanel {
                 BorderFactory.createMatteBorder(0, 1, 0, 0, DARK),
                 BorderFactory.createEmptyBorder(18, 14, 18, 14)
         ));
+
+        timerLabel = new JLabel("Time: 0");
+
+        health = new JLabel("Health: " + logic.getHealth());
+        health.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        health.setForeground(new Color(0xAAAAAA));
+
+        JLabel username = new JLabel("Logged in as:\n" + HubPanel.getUserName());
+        username.setForeground(Color.WHITE);
 
         JLabel diffLabel = new JLabel("DIFFICULTY");
         diffLabel.setFont(new Font("SansSerif", Font.BOLD, 10));
@@ -161,6 +168,12 @@ public class NonogrammPanel extends JPanel {
         backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        rightPanel.add(health);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(timerLabel);
+        rightPanel.add(Box.createVerticalStrut(8));
+        rightPanel.add(username);
+        rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(diffLabel);
         rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(difficulty);
@@ -171,7 +184,7 @@ public class NonogrammPanel extends JPanel {
         rightPanel.add(Box.createVerticalGlue());
         add(rightPanel, BorderLayout.EAST);
 
-        //LEFT PANEL
+        //---------------- LEFT PANEL ----------------
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setBackground(DARK_PANEL);
@@ -209,7 +222,13 @@ public class NonogrammPanel extends JPanel {
         leftPanel.add(Box.createVerticalGlue());
         add(leftPanel, BorderLayout.WEST);
 
-        // ================= ACTION =================
+        //---------------- ACTIONS ----------------
+
+        gameTimer = new Timer(1000, e -> {
+            secondsElapsed++;
+            timerLabel.setText("Time: " + secondsElapsed);
+        });
+        gameTimer.start();
 
 
         backBtn.addActionListener(e -> {
@@ -228,7 +247,7 @@ public class NonogrammPanel extends JPanel {
 
 
 
-
+    //---------------- METHODS ----------------
     private void handleClick(MouseEvent e,JButton button,int i ,int j){
         if (e.getButton() == MouseEvent.BUTTON1){
             if (logic.isReavealed(i,j)){
@@ -248,6 +267,7 @@ public class NonogrammPanel extends JPanel {
             health.setText("Health: " + logic.getHealth());
 
             if (logic.isWon()){
+                gameTimer.stop();
                 try{
                     if (frame.currentPlayerId != -1){
                         frame.db.saveScore(frame.currentPlayerId,selectedDiff,"WIN");
@@ -264,6 +284,7 @@ public class NonogrammPanel extends JPanel {
             }
 
             if (logic.isDead()){
+                gameTimer.stop();
                 int result = JOptionPane.showConfirmDialog(this,"You have lost!\n start new game","DEFEAT",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
                     frame.startNewNonogram(logic.setDiff(selectedDiff));

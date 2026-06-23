@@ -8,7 +8,7 @@ public class HubPanel extends JPanel {
     private final GameFrame frame;
     private JPanel cardGrid;
     private final List<GameCard> cards = new ArrayList<>();
-    private JLabel UserName = new JLabel("Not logged in yet");
+    private static JLabel UserName = new JLabel("Not logged in yet");
     private JButton loginButton;
 
 
@@ -108,7 +108,7 @@ public class HubPanel extends JPanel {
         }
     }
 
-    public String getUserName(){
+    public static String getUserName(){
         return UserName.getText();
     }
 
