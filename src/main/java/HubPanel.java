@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ public class HubPanel extends JPanel {
     private static JLabel UserName = new JLabel("Not logged in yet");
     private JButton loginButton;
     private boolean favToggle = true;
+    private JTextField searchBar;
+
 
 
     private final Color NAV_CLR = new Color(0x30302e);
@@ -46,7 +50,12 @@ public class HubPanel extends JPanel {
         rightPanel.setBackground(NAV_CLR);
         rightPanel.setPreferredSize(new Dimension(200, 50));
 
-        JTextField searchBar = new JTextField();
+        searchBar = new JTextField();
+        searchBar.setForeground(Color.WHITE);
+        searchBar.setBackground(BG_CLR);
+        searchBar.setCaretColor(Color.WHITE);
+        searchBar.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
+        searchBar.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         JButton favourites = new JButton("\u2605 Favourites");
         favourites.setFont(new Font("SansSerif", Font.PLAIN, 16));
         favourites.setForeground(Color.WHITE);
@@ -64,10 +73,11 @@ public class HubPanel extends JPanel {
         loginButton = new JButton( "Login");
 
         loginButton.setForeground(Color.WHITE);
-        loginButton.setBorderPainted(false);
         loginButton.setContentAreaFilled(false);
+        loginButton.setBorderPainted(false);
         loginButton.setFocusPainted(false);
         loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
 
         rightPanel.add(UserName);
         rightPanel.add(loginButton);
@@ -98,15 +108,20 @@ public class HubPanel extends JPanel {
             }
         });
 
-        favourites.addActionListener(e -> {
-            favToggle = !favToggle;
-            for(GameCard card :cards){
-
-                    card.setVisible(card.isFavorited || favToggle);
-
+        searchBar.getDocument().addDocumentListener(new DocumentListener(){
+            public void insertUpdate(DocumentEvent e){
+                Filter();
             }
-            cardGrid.revalidate();
-            cardGrid.repaint();
+            public void removeUpdate(DocumentEvent e){
+                Filter();
+            }
+            public void changedUpdate(DocumentEvent e){
+                Filter();
+            }
+        });
+
+        favourites.addActionListener(e -> {
+            Filter();
         });
 
         //---------------- CARD BAR ----------------
@@ -140,6 +155,21 @@ public class HubPanel extends JPanel {
     public static String getUserName(){
         return UserName.getText();
     }
+
+    public void Filter(){
+        String query = searchBar.getText().toLowerCase().trim();
+
+        favToggle = !favToggle;
+        for(GameCard card :cards){
+            boolean nameMatch = card.gameName.toLowerCase().contains(query);
+            card.setVisible(card.isFavorited || favToggle || nameMatch);
+
+        }
+        cardGrid.revalidate();
+        cardGrid.repaint();
+    }
+
+
 
 
 
@@ -205,6 +235,7 @@ public class HubPanel extends JPanel {
             playBtn.setBackground(BG_CLR);
             playBtn.setFocusPainted(false);
             playBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            playBtn.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
             playBtn.addActionListener(e -> launchGame(gameName));
 
             add(topPart, BorderLayout.NORTH);
