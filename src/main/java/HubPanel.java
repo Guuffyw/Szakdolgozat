@@ -97,7 +97,11 @@ public class HubPanel extends JPanel {
         loginButton.addActionListener(e -> {
             String input = JOptionPane.showInputDialog(this, "Enter username");
 
+
             if (input != null && !input.trim().isEmpty()) {
+                input.toLowerCase().trim();
+                input = input.substring(0, 1).toUpperCase() + input.substring(1);
+
                 UserName.setText(input);
                 loginButton.setText("Change User");
                 try {

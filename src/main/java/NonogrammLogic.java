@@ -138,7 +138,7 @@ public class NonogrammLogic {
             if (cell){
                 count++;
             } else if (count > 0) {
-                builder.append(count).append(",");
+                builder.append(count).append(" ");
                 count = 0;
             }
         }

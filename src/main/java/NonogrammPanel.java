@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
@@ -6,7 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.jar.JarEntry;
 
 public class NonogrammPanel extends JPanel {
 
@@ -57,7 +55,7 @@ public class NonogrammPanel extends JPanel {
         int N = logic.getSize();
         buttons = new JButton[N][N];
 
-        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
+        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1,1,1));
         gridPanel.setBackground(NAV_CLR);
         gridPanel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
 
@@ -69,14 +67,18 @@ public class NonogrammPanel extends JPanel {
                 } else if (i == 0) {
                     JLabel lbl = new JLabel(logic.countColoumns(j - 1), SwingConstants.CENTER);
                     lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
-                    lbl.setForeground(new Color(0x222222));
+                    lbl.setForeground(Color.WHITE);
+                    lbl.setAlignmentX(RIGHT_ALIGNMENT);
 
                     gridPanel.add(lbl);
                 } else if (j == 0) {
-                    JLabel lbl = new JLabel(logic.countRows(i-1), SwingConstants.CENTER);
+                    JLabel lbl = new JLabel(logic.countRows(i-1),SwingConstants.RIGHT);
                     lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
-                    lbl.setForeground(new Color(0x222222));
+                    lbl.setBorder(BorderFactory.createEmptyBorder(0,0,0,2));
+                    lbl.setForeground(Color.WHITE);
                     gridPanel.add(lbl);
+                    lbl.setAlignmentX(RIGHT_ALIGNMENT);
+
                 } else {
                     JButton button = new JButton();
                     button.setBackground(Color.WHITE);
@@ -128,7 +130,9 @@ public class NonogrammPanel extends JPanel {
         health.setFont(new Font("SansSerif", Font.BOLD, 12));
         health.setForeground(Color.WHITE);
 
-        JLabel username = new JLabel("Logged in as:\n" + HubPanel.getUserName());
+        JLabel loggedIn = new JLabel("Logged in as:");
+        loggedIn.setForeground(Color.WHITE);
+        JLabel username = new JLabel(HubPanel.getUserName());
         username.setForeground(Color.WHITE);
 
         JLabel diffLabel = new JLabel("DIFFICULTY");
@@ -142,33 +146,38 @@ public class NonogrammPanel extends JPanel {
         difficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
         difficulty.setBackground(BG_CLR);
         difficulty.setForeground(Color.WHITE);
+        difficulty.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
+
 
         JButton startBtn = new JButton("Start");
-        startBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        startBtn.setBackground(BG_CLR);
-        startBtn.setForeground(Color.WHITE);
-        startBtn.setFocusPainted(false);
-        startBtn.setBorderPainted(false);
         startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
-        startBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        startBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        startBtn.setForeground(Color.WHITE);
+        startBtn.setBackground(BG_CLR);
+        startBtn.setFocusPainted(false);
         startBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        startBtn.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
 
         JButton backBtn = new JButton("Back to Hub");
-        backBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        backBtn.setBackground(BG_CLR);
         backBtn.setForeground(Color.WHITE);
+        backBtn.setBackground(BG_CLR);
         backBtn.setFocusPainted(false);
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
 
 
         backBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        rightPanel.add(Box.createVerticalGlue());
+
+        rightPanel.add(loggedIn);
+        rightPanel.add(username);
+        rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(health);
         rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(timerLabel);
-        rightPanel.add(Box.createVerticalStrut(8));
-        rightPanel.add(username);
         rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(diffLabel);
         rightPanel.add(Box.createVerticalStrut(8));
