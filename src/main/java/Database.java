@@ -1,5 +1,6 @@
 import java.sql.*;
 
+
 public class Database {
     private static final String DB_URL = "jdbc:sqlite:nonogram.db";
 
@@ -97,16 +98,33 @@ public class Database {
         ps.executeUpdate();
     }
 
-    public int getBestScore(int playerId, String gameName) throws  SQLException{
+    public int getTotalScore(int playerId, String gameName) throws  SQLException{
         PreparedStatement ps = connection.prepareStatement(
-                "SELECT score FROM scores WHERE player_id = ? and gameName = ?");
+                "SELECT SUM(score) AS totalScores FROM scores WHERE player_id = ? and gameName = ?");
         ps.setInt(1,playerId);
         ps.setString(2,gameName);
         ResultSet rs = ps.executeQuery();
         if (rs.next()){
-            return rs.getInt("score");
+            return rs.getInt("totalScores");
         };
         return 0;
+    }
+
+    public ResultSet getLeaderBoard(String gameName) throws SQLException {
+        String sql = """
+        SELECT p.username,
+               SUM(s.score) AS totalScore
+        FROM scores s
+        JOIN players p ON s.player_id = p.id
+        WHERE s.gameName = ?
+        GROUP BY s.player_id
+        ORDER BY totalScore DESC
+        """;
+
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, gameName);
+
+        return ps.executeQuery();
     }
 
     public void close() {

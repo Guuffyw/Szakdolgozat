@@ -8,7 +8,7 @@ import java.util.List;
 
 public class HubPanel extends JPanel {
     private final GameFrame frame;
-    private JPanel cardGrid;
+    public   JPanel cardGrid;
     private final List<GameCard> cards = new ArrayList<>();
     private static JLabel UserName = new JLabel("Not logged in yet");
     private JButton loginButton;
@@ -103,7 +103,7 @@ public class HubPanel extends JPanel {
                 try {
                     frame.currentPlayerId = frame.db.getOrCreatePlayer(input);
                     for (GameCard card : cards){
-                        int newScore = frame.db.getBestScore(frame.currentPlayerId,card.gameName);
+                        int newScore = frame.db.getTotalScore(frame.currentPlayerId,card.gameName);
                         card.updateScore(newScore);
                         Filter();
                     }

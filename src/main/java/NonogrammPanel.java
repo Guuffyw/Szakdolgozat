@@ -1,8 +1,10 @@
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.jar.JarEntry;
 
@@ -15,23 +17,15 @@ public class NonogrammPanel extends JPanel {
     private JButton[][] buttons;
 
     public String selectedDiff = "Easy";
+    private JPanel leaderboardRows;
 
     private Timer gameTimer;
     private int secondsElapsed = 0;
     private JLabel timerLabel;
 
-    private static final Color DARK        = new Color(0x111111);
-    private static final Color DARK_PANEL  = new Color(0x1A1A1A);
-    private static final Color DARK_ROW    = new Color(0x2A2A2A);
-    private static final Color DARK_BORDER = new Color(0x333333);
-    private static final Color TEXT_BRIGHT = new Color(0xCCCCCC);
-    private static final Color TEXT_DIM    = new Color(0x555555);
-    private static final Color PAGE_BG     = new Color(0xF5F5F3);
-    private static final Color CELL_BORDER = new Color(0xCCCCCC);
-    private static final Color BLUE_BTN    = new Color(0x4A90D9);
-    private static final Color WRONG_BG    = new Color(0xFDF0F0);
-    private static final Color WRONG_BORDER= new Color(0xE8A8A8);
-    private static final Color WRONG_TEXT  = new Color(0xC25050);
+    private final Color NAV_CLR = new Color(0x30302e);
+    private final Color BG_CLR = new Color(0x141413);
+    private final Color CREAMY = new Color(0xFDFBD4);
 
     public NonogrammPanel(GameFrame frame,NonogrammLogic logic) {
         this.frame = frame;
@@ -42,13 +36,13 @@ public class NonogrammPanel extends JPanel {
 
     public void buildPanel()
     {
-        setBackground(PAGE_BG);
+        setBackground(CREAMY);
 
-
+        //---------------- TOP PANEL ----------------
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(DARK);
+        topPanel.setBackground(BG_CLR);
         topPanel.setPreferredSize(new Dimension(0, 48));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        topPanel.setBorder(BorderFactory.createMatteBorder(0,0,2,0,Color.BLACK));
 
         JLabel title = new JLabel("NONOGRAMM", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -61,10 +55,12 @@ public class NonogrammPanel extends JPanel {
 
         //---------------- MIDDLE PANEL ----------------
         int N = logic.getSize();
-        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
-        gridPanel.setBackground(PAGE_BG);
-        gridPanel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
         buttons = new JButton[N][N];
+
+        JPanel gridPanel = new JPanel(new GridLayout(N + 1, N + 1, 3, 3));
+        gridPanel.setBackground(NAV_CLR);
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
+
 
         for (int i = 0; i < N + 1; i++) {
             for (int j = 0; j < N + 1; j++) {
@@ -85,10 +81,7 @@ public class NonogrammPanel extends JPanel {
                     JButton button = new JButton();
                     button.setBackground(Color.WHITE);
                     button.setFocusPainted(false);
-                    button.setOpaque(true);
-                    button.setBorder(BorderFactory.createLineBorder(CELL_BORDER, 1));
                     button.setFont(new Font("SansSerif", Font.BOLD, 13));
-                    button.setForeground(CELL_BORDER);
                     button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
                     int finalI = i - 1;
@@ -123,52 +116,50 @@ public class NonogrammPanel extends JPanel {
         //---------------- RIGHT PANEL ----------------
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBackground(DARK_PANEL);
+        rightPanel.setBackground(NAV_CLR);
         rightPanel.setPreferredSize(new Dimension(145, 0));
-        rightPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 1, 0, 0, DARK),
-                BorderFactory.createEmptyBorder(18, 14, 18, 14)
-        ));
+
 
         timerLabel = new JLabel("Time: 0");
+        timerLabel.setForeground(Color.WHITE);
+        timerLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 
         health = new JLabel("Health: " + logic.getHealth());
-        health.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        health.setForeground(new Color(0xAAAAAA));
+        health.setFont(new Font("SansSerif", Font.BOLD, 12));
+        health.setForeground(Color.WHITE);
 
         JLabel username = new JLabel("Logged in as:\n" + HubPanel.getUserName());
         username.setForeground(Color.WHITE);
 
         JLabel diffLabel = new JLabel("DIFFICULTY");
         diffLabel.setFont(new Font("SansSerif", Font.BOLD, 10));
-        diffLabel.setForeground(TEXT_DIM);
+        diffLabel.setForeground(Color.WHITE);
         diffLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JComboBox<String> difficulty = new JComboBox<>(new String[]{"Easy", "Normal", "Hard"});
-        difficulty.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        difficulty.setFont(new Font("SansSerif", Font.BOLD, 12));
         difficulty.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         difficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
-        difficulty.setBackground(DARK_ROW);
-        difficulty.setForeground(TEXT_BRIGHT);
+        difficulty.setBackground(BG_CLR);
+        difficulty.setForeground(Color.WHITE);
 
         JButton startBtn = new JButton("Start");
         startBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
-        startBtn.setBackground(BLUE_BTN);
+        startBtn.setBackground(BG_CLR);
         startBtn.setForeground(Color.WHITE);
         startBtn.setFocusPainted(false);
         startBtn.setBorderPainted(false);
-        startBtn.setOpaque(true);
         startBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         startBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         startBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         JButton backBtn = new JButton("Back to Hub");
-        backBtn.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        backBtn.setBackground(DARK_PANEL);
-        backBtn.setForeground(TEXT_DIM);
+        backBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+        backBtn.setBackground(BG_CLR);
+        backBtn.setForeground(Color.WHITE);
         backBtn.setFocusPainted(false);
-        backBtn.setBorder(BorderFactory.createLineBorder(DARK_BORDER, 1));
-        backBtn.setOpaque(true);
+
+
         backBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         backBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -194,40 +185,29 @@ public class NonogrammPanel extends JPanel {
         //---------------- LEFT PANEL ----------------
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(DARK_PANEL);
+        leftPanel.setBackground(NAV_CLR);
         leftPanel.setPreferredSize(new Dimension(145, 0));
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(18, 14, 18, 14));
+        leftPanel.setBorder(new MatteBorder(0,0,0,2,Color.BLACK));
 
-        JLabel scoreTitle = new JLabel("SCOREBOARD");
-        scoreTitle.setFont(new Font("SansSerif", Font.BOLD, 10));
-        scoreTitle.setForeground(TEXT_DIM);
-        scoreTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-        leftPanel.add(scoreTitle);
+        JLabel scoreTitle = new JLabel("Leaderboard:");
+        scoreTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
+        scoreTitle.setForeground(Color.WHITE);
+        scoreTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        leaderboardRows = new JPanel();
+        leaderboardRows.setLayout(new BoxLayout(leaderboardRows, BoxLayout.Y_AXIS));
+        leaderboardRows.setBackground(NAV_CLR);
+        leaderboardRows.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leaderboardRows.setBorder(BorderFactory.createMatteBorder(1,0,0,0,Color.BLACK));
+
+
         leftPanel.add(Box.createVerticalStrut(12));
-
-        String[][] scores = {{"1. Alice", "1240"}, {"2. Bob", "980"}, {"3. Carol", "870"}, {"4. Dave", "760"}, {"5. Eve", "640"}};
-        for (int k = 0; k < scores.length; k++) {
-            JPanel row = new JPanel(new BorderLayout());
-            row.setBackground(k == 0 ? DARK_ROW : DARK_PANEL);
-            row.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
-            row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-            row.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            JLabel name = new JLabel(scores[k][0]);
-            name.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            name.setForeground(TEXT_BRIGHT);
-
-            JLabel pts = new JLabel(scores[k][1]);
-            pts.setFont(new Font("SansSerif", Font.PLAIN, 12));
-            pts.setForeground(TEXT_DIM);
-
-            row.add(name, BorderLayout.WEST);
-            row.add(pts, BorderLayout.EAST);
-            leftPanel.add(row);
-            leftPanel.add(Box.createVerticalStrut(2));
-        }
+        leftPanel.add(scoreTitle);
+        leftPanel.add(Box.createVerticalStrut(10));
+        leftPanel.add(leaderboardRows);
         leftPanel.add(Box.createVerticalGlue());
         add(leftPanel, BorderLayout.WEST);
+        refreshLeaderboard();
 
 
 
@@ -251,6 +231,8 @@ public class NonogrammPanel extends JPanel {
         difficulty.addActionListener(e -> {
            selectedDiff = (String) difficulty.getSelectedItem();
         });
+
+
 
     }
 
@@ -289,6 +271,7 @@ public class NonogrammPanel extends JPanel {
                     frame.startNewNonogram(logic.setDiff(selectedDiff));
                 }else{
                     frame.showHub();
+
                 }
             }
 
@@ -314,5 +297,46 @@ public class NonogrammPanel extends JPanel {
             }
         }
     }
+    private void refreshLeaderboard() {
+        leaderboardRows.removeAll();
+
+        try {
+            ResultSet rs = frame.db.getLeaderBoard("Nonogramm");
+            int rank = 1;
+            while (rs.next() && rank <= 10) {
+                String name  = rs.getString("username");
+                int    score = rs.getInt("totalScore");
+
+                JPanel row = new JPanel(new BorderLayout());
+                row.setBackground(NAV_CLR);
+                row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+                row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+                JLabel nameLabel  = new JLabel(rank + ". " + name);
+                JLabel scoreLabel = new JLabel(String.valueOf(score));
+                nameLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+                scoreLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+                nameLabel.setForeground(Color.WHITE);
+                scoreLabel.setForeground(Color.WHITE);
+
+                row.add(nameLabel,  BorderLayout.WEST);
+                row.add(scoreLabel, BorderLayout.EAST);
+
+                leaderboardRows.add(row);
+                leaderboardRows.add(Box.createVerticalStrut(4));
+                rank++;
+            }
+        } catch (SQLException e) {
+            JLabel err = new JLabel("Unavailable");
+            err.setFont(new Font("SansSerif", Font.BOLD, 12));
+            err.setForeground(Color.WHITE);
+            leaderboardRows.add(err);
+        }
+
+        leaderboardRows.revalidate();
+        leaderboardRows.repaint();
+    }
+
+
 
 }
