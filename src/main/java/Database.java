@@ -1,6 +1,5 @@
 import java.sql.*;
 
-
 public class Database {
     private static final String DB_URL = "jdbc:sqlite:nonogram.db";
 
