@@ -42,9 +42,9 @@ public class NonogrammLogic {
     //1 == BLACK ||  0 == WHITE
     public void fillBoard(int size){
         switch (size){
-            case 15: density = 0.7; health = 3; break;
-            case 10: density = 0.5; health = 4; break;
-            default: density = 0.4; health = 5; break;
+            case 15: density = 0.8; health = 3; break;
+            case 10: density = 0.65; health = 4; break;
+            default: density = 0.5; health = 5; break;
         }
         foundBlackCounter = 0;
         totalBlackCounter = 0;

@@ -97,7 +97,17 @@ public class Database {
         ps.executeUpdate();
     }
 
-
+    public int getBestScore(int playerId, String gameName) throws  SQLException{
+        PreparedStatement ps = connection.prepareStatement(
+                "SELECT score FROM scores WHERE player_id = ? and gameName = ?");
+        ps.setInt(1,playerId);
+        ps.setString(2,gameName);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()){
+            return rs.getInt("score");
+        };
+        return 0;
+    }
 
     public void close() {
         if (connection == null) {

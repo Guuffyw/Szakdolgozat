@@ -102,6 +102,11 @@ public class HubPanel extends JPanel {
                 loginButton.setText("Change User");
                 try {
                     frame.currentPlayerId = frame.db.getOrCreatePlayer(input);
+                    for (GameCard card : cards){
+                        int newScore = frame.db.getBestScore(frame.currentPlayerId,card.gameName);
+                        card.updateScore(newScore);
+                        Filter();
+                    }
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -182,6 +187,7 @@ public class HubPanel extends JPanel {
         boolean isFavorited;
 
         private final JButton starBtn;
+        private JLabel score;
 
         public GameCard(String name, boolean isFavorited) {
             this.gameName = name;
@@ -218,7 +224,7 @@ public class HubPanel extends JPanel {
             gameLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
             gameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            JLabel score = new JLabel("Score: 0");
+            score = new JLabel("Score: 0");
             score.setForeground(Color.LIGHT_GRAY);
             score.setFont(new Font("SansSerif", Font.PLAIN, 14));
             score.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -254,6 +260,10 @@ public class HubPanel extends JPanel {
             starBtn.setText(isFavorited ? "\u2605" : "\u2606");
             cardGrid.revalidate();
             cardGrid.repaint();
+        }
+
+        private void updateScore(int updatedscore){
+            score.setText("Score:" + updatedscore);
         }
     }
 }
