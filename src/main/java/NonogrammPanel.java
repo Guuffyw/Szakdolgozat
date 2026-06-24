@@ -65,10 +65,14 @@ public class NonogrammPanel extends JPanel {
                 if (i == 0 && j == 0) {
                     gridPanel.add(new JLabel(""));
                 } else if (i == 0) {
-                    JLabel lbl = new JLabel(logic.countColoumns(j - 1), SwingConstants.CENTER);
+                    String clue = logic.countColoumns(j - 1);
+                    clue = "<html><center>" + clue.replace(" ", "<br>") + "</center></html>";
+
+                    JLabel lbl = new JLabel(clue, SwingConstants.CENTER);
                     lbl.setFont(new Font("SansSerif", Font.BOLD, 13));
                     lbl.setForeground(Color.WHITE);
-                    lbl.setAlignmentX(RIGHT_ALIGNMENT);
+                    lbl.setPreferredSize(new Dimension(30, 60));
+                    lbl.setVerticalAlignment(SwingConstants.BOTTOM);
 
                     gridPanel.add(lbl);
                 } else if (j == 0) {
@@ -82,7 +86,6 @@ public class NonogrammPanel extends JPanel {
                 } else {
                     JButton button = new JButton();
                     button.setBackground(Color.WHITE);
-                    button.setFocusPainted(false);
                     button.setFont(new Font("SansSerif", Font.BOLD, 13));
                     button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -123,12 +126,12 @@ public class NonogrammPanel extends JPanel {
 
 
         timerLabel = new JLabel("Time: 0");
-        timerLabel.setForeground(Color.WHITE);
-        timerLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        timerLabel.setForeground(Color.YELLOW);
+        timerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
         health = new JLabel("Health: " + logic.getHealth());
-        health.setFont(new Font("SansSerif", Font.BOLD, 12));
-        health.setForeground(Color.WHITE);
+        health.setFont(new Font("SansSerif", Font.BOLD, 14));
+        health.setForeground(Color.RED);
 
         JLabel loggedIn = new JLabel("Logged in as:");
         loggedIn.setForeground(Color.WHITE);
@@ -147,6 +150,7 @@ public class NonogrammPanel extends JPanel {
         difficulty.setBackground(BG_CLR);
         difficulty.setForeground(Color.WHITE);
         difficulty.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.BLACK));
+        difficulty.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 
         JButton startBtn = new JButton("Start");
@@ -171,7 +175,6 @@ public class NonogrammPanel extends JPanel {
         backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         rightPanel.add(Box.createVerticalGlue());
-
         rightPanel.add(loggedIn);
         rightPanel.add(username);
         rightPanel.add(Box.createVerticalStrut(8));
@@ -180,7 +183,6 @@ public class NonogrammPanel extends JPanel {
         rightPanel.add(timerLabel);
         rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(diffLabel);
-        rightPanel.add(Box.createVerticalStrut(8));
         rightPanel.add(difficulty);
         rightPanel.add(Box.createVerticalStrut(20));
         rightPanel.add(startBtn);
@@ -278,6 +280,7 @@ public class NonogrammPanel extends JPanel {
                 int result = JOptionPane.showConfirmDialog(this,"You won\nstart new game","Victory",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
                     frame.startNewNonogram(logic.setDiff(selectedDiff));
+                    refreshLeaderboard();
                 }else{
                     frame.showHub();
 
@@ -306,6 +309,8 @@ public class NonogrammPanel extends JPanel {
             }
         }
     }
+
+
     private void refreshLeaderboard() {
         leaderboardRows.removeAll();
 
@@ -345,7 +350,4 @@ public class NonogrammPanel extends JPanel {
         leaderboardRows.revalidate();
         leaderboardRows.repaint();
     }
-
-
-
 }

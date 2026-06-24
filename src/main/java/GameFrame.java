@@ -8,24 +8,24 @@ public class GameFrame extends JFrame {
     private CardLayout layout;
     private JPanel container;
 
+    private HubPanel hubPanel;
+    private NonogrammPanel nonogrammPanel;
+
     public GameFrame() {
 
-        // create layout
         layout = new CardLayout();
-
-        // container that holds screens
         container = new JPanel(layout);
 
-        // add screens
+        hubPanel = new HubPanel(this);
+
         NonogrammLogic logic = new NonogrammLogic(5,3);
+        nonogrammPanel = new NonogrammPanel(this, logic);
 
-        container.add(new HubPanel(this), "hub");
-        container.add(new NonogrammPanel(this,logic), "nonogramm");
+        container.add(hubPanel, "hub");
+        container.add(nonogrammPanel, "nonogramm");
 
-        // show starting screen
         layout.show(container, "hub");
 
-        // frame setup
         add(container);
 
         setTitle("APPLICATION WINDOW");
@@ -34,11 +34,27 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    public void startNewNonogram(int size){
-        container.add(new NonogrammPanel(this,new NonogrammLogic(size,3)),"nonogramm");
-        layout.show(container,"nonogramm");
-        container.revalidate();
-        container.repaint();
+    public void startNewNonogram(int size) {
+
+        switch (size) {
+            case 5:setSize(800, 600);break;
+            case 10:setSize(1000, 700);break;
+            case 15: setSize(1300, 1300);break;
+        }
+
+        setLocationRelativeTo(null);
+        container.removeAll();
+
+        HubPanel hubPanel = new HubPanel(this);
+        container.add(hubPanel, "hub");
+
+        NonogrammPanel nonogrammPanel =
+                new NonogrammPanel(this, new NonogrammLogic(size, 3));
+        container.add(nonogrammPanel, "nonogramm");
+
+        layout.show(container, "nonogramm");
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -47,12 +63,12 @@ public class GameFrame extends JFrame {
         super.dispose();
     }
 
-    // helper methods for switching screens
-    public void showGame() {
-        layout.show(container, "nonogramm");
-    }
 
     public void showHub() {
+        hubPanel.refreshCards();
         layout.show(container, "hub");
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+
     }
 }

@@ -38,6 +38,7 @@ public class HubPanel extends JPanel {
         buttomRow.setBackground(NAV_CLR);
         buttomRow.setPreferredSize(new Dimension(0, 50));
 
+
         JPanel leftSpacer = new JPanel();
         leftSpacer.setBackground(NAV_CLR);
         leftSpacer.setPreferredSize(new Dimension(200, 50));
@@ -176,6 +177,23 @@ public class HubPanel extends JPanel {
         }
         cardGrid.revalidate();
         cardGrid.repaint();
+    }
+    public void refreshCards() {
+        try {
+            for (GameCard card : cards) {
+                int score = frame.db.getTotalScore(
+                        frame.currentPlayerId,
+                        card.gameName);
+
+                card.updateScore(score);
+            }
+
+            cardGrid.revalidate();
+            cardGrid.repaint();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
