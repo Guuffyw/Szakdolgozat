@@ -28,7 +28,7 @@ public class GameFrame extends JFrame {
 
         add(container);
 
-        setTitle("APPLICATION WINDOW");
+        setTitle("Szakdolgozat By:Gati Csaba");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -57,11 +57,6 @@ public class GameFrame extends JFrame {
         repaint();
     }
 
-    @Override
-    public void dispose() {
-        db.close();
-        super.dispose();
-    }
 
 
     public void showHub() {
