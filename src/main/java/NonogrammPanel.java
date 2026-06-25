@@ -277,7 +277,7 @@ public class NonogrammPanel extends JPanel {
                 }catch (SQLException b){
                     b.printStackTrace();
                 };
-                int result = JOptionPane.showConfirmDialog(this,"You won\nstart new game","Victory",JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(this,"You won and scored: "+logic.calculateScore(secondsElapsed)+"Start a new one?","Victory",JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION){
                     frame.startNewNonogram(logic.setDiff(selectedDiff));
                     refreshLeaderboard();

@@ -74,10 +74,17 @@ public class NonogrammLogic {
         return false;
     }
 
-    public int calculateScore(int seconds){
-        int healthbonus = getHealth() * 100;
-        int time = 1000 - seconds;
-        return (healthbonus + time);
+    public int calculateScore(int seconds) {
+        int difficultyMultiplier = switch (N) {
+            case 15 -> 3;
+            case 10 -> 2;
+            default -> 1;
+        };
+
+        int healthBonus = getHealth() * 100;
+        int timeBonus = Math.max(0, 500 - seconds * 2);
+
+        return (healthBonus + timeBonus) * difficultyMultiplier;
     }
 
     public boolean isReavealed(int i,int j){

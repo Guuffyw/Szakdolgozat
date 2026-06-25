@@ -131,6 +131,7 @@ public class HubPanel extends JPanel {
         });
 
         favourites.addActionListener(e -> {
+            favToggle = !favToggle;
             Filter();
         });
 
@@ -141,9 +142,7 @@ public class HubPanel extends JPanel {
         //-------- GAMES --------
         addGame("Nonogramm",false);
         addGame("Nonogramm",false);
-        addGame("Nonogramm",false);
-        addGame("Nonogramm",false);
-        addGame("Nonogramm",false);
+        addGame("Sodoku",false);
 
         add(cardGrid, BorderLayout.CENTER);
     }
@@ -169,10 +168,10 @@ public class HubPanel extends JPanel {
     public void Filter(){
         String query = searchBar.getText().toLowerCase().trim();
 
-        favToggle = !favToggle;
         for(GameCard card :cards){
             boolean nameMatch = card.gameName.toLowerCase().contains(query);
-            card.setVisible(card.isFavorited || favToggle || nameMatch);
+            boolean favMatch = !favToggle || card.isFavorited;
+            card.setVisible(nameMatch && favMatch);
 
         }
         cardGrid.revalidate();
@@ -195,12 +194,6 @@ public class HubPanel extends JPanel {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
 
 
     //---------------- CARD DESIGN ----------------
