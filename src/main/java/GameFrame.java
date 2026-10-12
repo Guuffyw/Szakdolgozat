@@ -34,6 +34,7 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    //---------------- METHODS(NEW GAMES GO HERE)----------------
     public void startNewNonogram(int size) {
 
         switch (size) {
@@ -45,7 +46,7 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         container.removeAll();
 
-        HubPanel hubPanel = new HubPanel(this);
+        hubPanel = new HubPanel(this);
         container.add(hubPanel, "hub");
 
         NonogrammPanel nonogrammPanel =
@@ -53,6 +54,24 @@ public class GameFrame extends JFrame {
         container.add(nonogrammPanel, "nonogramm");
 
         layout.show(container, "nonogramm");
+        revalidate();
+        repaint();
+    }
+
+    public void startNewSodoku(int level) {
+
+        setSize(900, 720);
+        setLocationRelativeTo(null);
+        container.removeAll();
+
+        hubPanel = new HubPanel(this);
+        container.add(hubPanel, "hub");
+
+        SodokuPanel sodokuPanel =
+                new SodokuPanel(this, new SodokuLogic(level, 3));
+        container.add(sodokuPanel, "sodoku");
+
+        layout.show(container, "sodoku");
         revalidate();
         repaint();
     }
