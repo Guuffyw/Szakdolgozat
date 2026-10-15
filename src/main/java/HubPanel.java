@@ -166,7 +166,6 @@ public class HubPanel extends JPanel {
 
         //-------- GAMES --------
         addGame("Nonogramm",false);
-        addGame("Nonogramm",false);
         addGame("Sodoku",false);
 
         add(cardGrid, BorderLayout.CENTER);
