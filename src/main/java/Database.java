@@ -12,10 +12,16 @@ public class Database {
     private void connect() {
         try {
             connection = DriverManager.getConnection(DB_URL);
+            // SQLite does not enforce foreign keys by default,
+            // it has to be switched on for every connection.
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
             createTables();
         } catch (SQLException e) {
-            System.err.println("Failed to connect to database.");
-            e.printStackTrace();
+            close();
+            throw new IllegalStateException(
+                    "Failed to connect to database: " + DB_URL, e);
         }
     }
 
